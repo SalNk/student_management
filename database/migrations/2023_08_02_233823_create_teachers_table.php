@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('teacher_name');
             $table->string('course_given');
             $table->foreignId('section_id')->constrained('sections');
+            $table->foreignId('class_id')->constrained('classes');
             $table->timestamps();
         });
     }

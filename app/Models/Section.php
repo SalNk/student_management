@@ -11,5 +11,16 @@ class Section extends Model
 
     protected $fillable = [
         'section_name',
+        'class_id',
     ];
+
+    public function classe ()
+    {
+        return $this->belongsTo(Classe::class, 'class_id');
+    }
+
+    public function student ()
+    {
+        return $this->hasMany(Student::class, 'section_id');
+    }
 }
