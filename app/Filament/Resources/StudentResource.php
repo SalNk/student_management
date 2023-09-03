@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Models\Section;
 use App\Models\Student;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -34,7 +36,20 @@ class StudentResource extends Resource
                 Forms\Components\TextInput::make('phone_number')
                     ->tel()
                     ->required()
-                    ->maxLength(191),
+                    ->maxLength(191)
+                    ->unique(),
+
+                // Select::make('class_id')
+                //     ->relationship('classe', 'class_name'),
+
+                // Select::make('section_id')
+                //     ->options(function (callable $get) {
+                //         $classeId = $get('classe_id');
+
+                //         if ($classeId) {
+                //             return Section::where('classe_id', $classeId)->pluck('section_name', 'id')->toArray();
+                //         }
+                //     }),
             ]);
     }
 
@@ -42,34 +57,35 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('first_name')->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('birth')
-                    ->date()->sortable(),
+                    ->date()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('phone_number'),
-                // Tables\Columns\TextColumn::make('created_at')
-                //     ->dateTime(),
-                // Tables\Columns\TextColumn::make('updated_at')
-                //     ->dateTime(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -77,5 +93,5 @@ class StudentResource extends Resource
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
-    }    
+    }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ClasseResource\Pages;
-use App\Filament\Resources\ClasseResource\RelationManagers;
-use App\Models\Classe;
+use App\Filament\Resources\SectionResource\Pages;
+use App\Filament\Resources\SectionResource\RelationManagers;
+use App\Models\Section;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Actions\DeleteAction;
 use Filament\Resources\Form;
@@ -16,9 +17,9 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ClasseResource extends Resource
+class SectionResource extends Resource
 {
-    protected static ?string $model = Classe::class;
+    protected static ?string $model = Section::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -26,11 +27,13 @@ class ClasseResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('classe_name')
-                ->required()
-                ->autofocus()
-                ->unique()
-                ->placeholder('Entrer le nom de la classe')
+                TextInput::make('section_name')
+                    ->required()
+                    ->autofocus()
+                    ->unique()
+                    ->placeholder('Entrer le nom de la section'),
+                Select::make('class_id')
+                    ->relationship('classe', 'class_name')
             ]);
     }
 
@@ -38,9 +41,12 @@ class ClasseResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('class_name')
-                ->sortable()
-                ->searchable()
+                TextColumn::make('section_name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('classe.class_name')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -48,26 +54,25 @@ class ClasseResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClasses::route('/'),
-            'create' => Pages\CreateClasse::route('/create'),
-            'edit' => Pages\EditClasse::route('/{record}/edit'),
+            'index' => Pages\ListSections::route('/'),
+            'create' => Pages\CreateSection::route('/create'),
+            'edit' => Pages\EditSection::route('/{record}/edit'),
         ];
-    }    
+    }
 }
